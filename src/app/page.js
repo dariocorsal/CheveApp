@@ -1,101 +1,184 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import { Home, Map, Star, Calendar, User, UserCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import AnimatedBackground from "./fondo";
+import { useRouter } from "next/navigation";
+
+const IconButton = ({ icon, label, isActive, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`flex flex-col items-center gap-1 h-auto py-2 px-3 rounded-md transition-colors ${
+      isActive
+        ? "bg-amber-100 text-amber-800"
+        : "text-gray-600 hover:bg-amber-50"
+    }`}
+  >
+    {icon}
+    <span className="text-xs">{label}</span>
+  </button>
+);
+
+const Buttonfill = ({ label, backgroundUrl, imageUrl, onClick }) => (
+  <div
+    className="relative bg-cover bg-center rounded-lg shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105"
+    onClick={onClick}
+    style={{
+      backgroundImage: `url(${backgroundUrl})`,
+      height: "180px", // Ajusta la altura según prefieras
+    }}
+  >
+    {/* Imagen centrada */}
+    <div className="w-24 h-24 mb-2 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+      <img
+        src={imageUrl}
+        alt={label}
+        className="w-full h-full object-cover"
+        onError={(e) => (e.target.src = "/placeholder.svg?height=96&width=96")}
+      />
+    </div>
+    {/* Etiqueta de texto */}
+    <span className="text-lg font-bold text-white text-center">{label}</span>
+  </div>
+);
+
+const BeerOption = ({ label, imageUrl, onClick }) => (
+  <div
+    className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-center transition-all hover:scale-105 cursor-pointer"
+    onClick={onClick}
+  >
+    <div className="w-24 h-24 mb-2 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+      <img
+        src={imageUrl}
+        alt={label}
+        className="w-full h-full object-cover"
+        onError={(e) => (e.target.src = "/placeholder.svg?height=96&width=96")}
+      />
+    </div>
+    <span className="text-lg font-bold text-gray-700 text-center">{label}</span>
+  </div>
+);
+
+const MainMenu = () => {
+  const [activeTab, setActiveTab] = useState("Inicio");
+  const router = useRouter();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="w-screen min-h-screen flex flex-col items-center justify-center relative p-4">
+      <div className="absolute top-0 left-0 w-full h-full z-[-1]">
+        <AnimatedBackground />
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <nav className="w-screen  flex sticky top-0 bg-white/70 backdrop-blur-md shadow-md z-10">
+        <div className="   flex max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <span className="text-2xl font-bold text-amber-500">RutaBrew</span>
+            <div className="flex space-x-1 md:space-x-2 overflow-x-auto">
+              <IconButton
+                icon={<Home size={16} />}
+                label="Inicio"
+                isActive={activeTab === "Inicio"}
+                onClick={() => navigate("/")}
+              />
+              <IconButton
+                icon={<Map size={16} />}
+                label="Explorar"
+                isActive={activeTab === "Explorar"}
+                onClick={() => setActiveTab("Explorar")}
+              />
+              <IconButton
+                icon={<Star size={16} />}
+                label="Favoritos"
+                isActive={activeTab === "Favoritos"}
+                onClick={() => setActiveTab("Favoritos")}
+              />
+              <IconButton
+                icon={<Calendar size={16} />}
+                label="Eventos"
+                isActive={activeTab === "Eventos"}
+                onClick={() => setActiveTab("Eventos")}
+              />
+              <IconButton
+                icon={<User size={16} />}
+                label="Perfil"
+                isActive={activeTab === "Perfil"}
+                onClick={() => setActiveTab("Perfil")}
+              />
+              <IconButton
+                icon={<UserCircle size={16} />}
+                label="Invitado"
+                isActive={activeTab === "Invitado"}
+                onClick={() => setActiveTab("Invitado")}
+              />
+            </div>
+          </div>
         </div>
+      </nav>
+
+      <main className="flex-grow w-full px-4 py-8">
+        <Buttonfill
+          label="Tus Favoritas"
+          backgroundUrl="/images/cervezas.jpg"
+          imageUrl="/images/giflogos.gif"
+          onClick={() => router.push("/cervecerias")}
+        />
+
+        <h1 className="text-3xl md:text-4xl font-bold text-amber-800 mb-8 text-center">
+          Explora tus cervecerias
+        </h1>
+
+        <BeerOption
+          label="Cerveza Rápida"
+          imageUrl="/images/lager.png"
+          onClick={() => navigate("/mapa-stout")}
+        />
+        <h1 className="text-3xl md:text-4xl font-bold text-amber-800 mb-8 text-center">
+          Conoce
+        </h1>
+        <div className="  grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <BeerOption
+            label="Cervezas de Temporada"
+            imageUrl="/images/temporada.png"
+            onClick={() => navigate("/temporada")}
+          />
+
+          <BeerOption
+            label="Beermap"
+            imageUrl="/images/mmapa.png"
+            onClick={() => navigate("/mapa-mexicali")}
+          />
+          <BeerOption
+            label="Eventos"
+            imageUrl="/images/eventos.png"
+            onClick={() => navigate("/eventos")}
+          />
+          <BeerOption
+            label="Promociones"
+            imageUrl="/images/promociones.png"
+            onClick={() => navigate("/ruta-al-siguiente-menu")}
+          />
+        </div>
+
+        <motion.img
+          src="/images/cerceamigo.png"
+          alt="cerceamigo"
+          className="absolute bottom-10 right-0 w-40 h-40 object-contain"
+          style={{ right: "20px" }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        />
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div>
+        <footer className="bg-amber-800 text-amber-50 py-4 mt-8">
+          <div className=" w-screen max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2024 RutaBrew. Todos los derechos reservados.</p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
-}
+};
+
+export default MainMenu;
